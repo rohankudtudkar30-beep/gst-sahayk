@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Sahayak - AI Compliance Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="logo">
+            <h2>GST Sahayak <span>AI</span></h2>
+        </div>
+        <nav>
+            <span class="status-badge">Web Version</span>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Smart GST Anomaly Detection & ITC Optimization</h1>
+            <p>Upload your purchase invoices and GSTR-2B data to instantly detect mismatches and prevent tax credit loss.</p>
+        </section>
+
+        <section class="upload-grid">
+            <!-- Invoice Upload Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="icon">📄</span>
+                    <h3>Upload Invoice</h3>
+                </div>
+                <p>Upload purchase bills (PNG, JPG, PDF) for automated OCR extraction.</p>
+                <div class="drop-zone" id="invoice-dropzone">
+                    <input type="file" id="invoice-input" accept="image/*,.pdf" hidden>
+                    <p>Drag & drop invoice image here or <button class="btn-secondary" onclick="document.getElementById('invoice-input').click()">Browse</button></p>
+                    <span id="invoice-filename" class="file-name"></span>
+                </div>
+            </div>
+
+            <!-- GSTR-2B Data Upload Card -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="icon">📊</span>
+                    <h3>Upload GSTR-2B</h3>
+                </div>
+                <p>Upload your official GSTR-2B statement file (JSON or CSV format).</p>
+                <div class="drop-zone" id="gstr-dropzone">
+                    <input type="file" id="gstr-input" accept=".json,.csv" hidden>
+                    <p>Drag & drop GSTR-2B file here or <button class="btn-secondary" onclick="document.getElementById('gstr-input').click()">Browse</button></p>
+                    <span id="gstr-filename" class="file-name"></span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Button -->
+        <div class="action-container">
+            <button id="process-btn" class="btn-primary" onclick="handleProcess()">Run AI Analysis & Reconciliation</button>
+        </div>
+
+        <!-- Dashboard / Results Placeholder -->
+        <section id="results-section" class="results-container hidden">
+            <h2>Analysis Summary</h2>
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h4>Processed Invoices</h4>
+                    <p id="metric-invoices">--</p>
+                </div>
+                <div class="metric-card warning">
+                    <h4>Mismatches Found</h4>
+                    <p id="metric-mismatches">--</p>
+                </div>
+                <div class="metric-card danger">
+                    <h4>Potential ITC Loss</h4>
+                    <p id="metric-loss">₹0.00</p>
+                </div>
+            </div>
+
+            <div class="details-card">
+                <h3>Extracted Invoice & Reconciliation Data</h3>
+                <div id="output-console" class="console-box">
+                    Ready to process data. Connect backend API to see real-time outputs.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 GST Sahayak. AI-powered tax compliance for Indian MSMEs.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
