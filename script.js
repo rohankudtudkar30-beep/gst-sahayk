@@ -12,36 +12,38 @@ document.getElementById('gstr-input').addEventListener('change', function(e) {
 });
 
 // UI Mock Processing Handler
-function handleProcess() {
-    const invoiceFile = document.getElementById('invoice-input').files[0];
-    const gstrFile = document.getElementById('gstr-input').files[0];
+async function handleProcess() {
+    const invoiceInput = document.getElementById('invoice-input');
+    const file = invoiceInput.files[0];
 
-    if (!invoiceFile && !gstrFile) {
-        alert("Please select at least an invoice image or a GSTR-2B file to process.");
+    if (!file) {
+        alert("Please select an invoice image to process.");
         return;
     }
 
-    const resultsSection = document.getElementById('results-section');
     const consoleBox = document.getElementById('output-console');
+    document.getElementById('results-section').classList.remove('hidden');
+    consoleBox.textContent = "Processing image with Gemini API...\nPlease wait...";
 
-    resultsSection.classList.remove('hidden');
-    consoleBox.textContent = "Processing files...\nSending data to backend processing service...";
+    const formData = new FormData();
+    formData.append('file', file);
 
-    // Mock UI update simulating backend response
-    setTimeout(() => {
-        document.getElementById('metric-invoices').textContent = "1";
-        document.getElementById('metric-mismatches').textContent = "1";
-        document.getElementById('metric-loss').textContent = "₹1,800.00";
+    try {
+        const response = await fetch('http://localhost:8000/api/ocr-invoice', {
+            method: 'POST',
+            body: formData
+        });
 
-        consoleBox.textContent = JSON.stringify({
-            status: "Success",
-            extracted_invoice: {
-                invoice_num: "INV-2026-001",
-                gstin: "27AAAAA0000A1Z5",
-                tax_amount: 1800.00
-            },
-            reconciliation_status: "Mismatch Detected",
-            recommendation: "Supplier has not uploaded invoice to GSTR-1 yet. Reach out to prevent ITC claim rejection."
-        }, null, 2);
-    }, 1500);
+        const data = await response.json();
+
+        if (response.ok) {
+            consoleBox.textContent = JSON.stringify(data, null, 2);
+            document.getElementById('metric-invoices').textContent = "1";
+            document.getElementById('metric-loss').textContent = "₹" + (data.extracted_data.gst_amount || "0.00");
+        } else {
+            consoleBox.textContent = "Error: " + (data.detail || "Upload failed");
+        }
+    } catch (error) {
+        consoleBox.textContent = "Failed to reach backend API. Check if 'python main.py' is running on your computer.";
+    }
 }
